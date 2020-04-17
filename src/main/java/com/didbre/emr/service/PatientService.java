@@ -43,13 +43,12 @@ public class PatientService {
    * @return
    * @throws NoSuchElementException
    */
-  public List<Patient> findAllPatients() throws NoSuchElementException{
+  public List<Patient> findAllPatients() throws NoSuchElementException {
     try {
       return this.repository.findAll();
     } catch (NoSuchElementException e) {
       throw new NoSuchElementException("No patient found");
     }
-
   }
 
   public void updatePatient() {}
