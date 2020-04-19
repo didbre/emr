@@ -2,6 +2,8 @@ package com.didbre.emr.service;
 
 import com.didbre.emr.domain.Patient;
 import com.didbre.emr.repository.PatientRepository;
+import com.didbre.emr.web.rest.PatientDTO;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -47,9 +50,25 @@ public class PatientService {
     try {
       return this.repository.findAll();
     } catch (NoSuchElementException e) {
+      //    todo change the message of a exception without creating new one
       throw new NoSuchElementException("No patient found");
     }
   }
 
-  public void updatePatient() {}
+  public Patient save(Patient patient) throws Exception {
+
+    log.info("save the patient");
+    log.info(patient.toString());
+    Patient patient1 = null;
+    try
+    {
+      patient1 = repository.save(patient);
+    }
+    catch (Exception exception)
+    {
+      exception.printStackTrace();
+    }
+    return patient1;
+
+  }
 }
