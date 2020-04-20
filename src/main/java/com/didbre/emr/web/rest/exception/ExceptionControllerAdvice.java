@@ -14,7 +14,8 @@ import java.util.NoSuchElementException;
 /**
  * Controller for exceptions generate through the webservice layer
  *
- * todo the controller can't catch exception generated from api url that didn't exist (like $server:$port/api/vron)
+ * <p>todo the controller can't catch exception generated from api url that didn't exist (like
+ * $server:$port/api/vron)
  */
 @ControllerAdvice
 public class ExceptionControllerAdvice {
@@ -24,8 +25,7 @@ public class ExceptionControllerAdvice {
   public ResponseEntity<ErrorInfo> handleEntityNotFoundException(
       HttpServletRequest req, Exception ex) {
     return new ResponseEntity<>(
-        new ErrorInfo(HttpStatus.NOT_FOUND.value(), req.getRequestURI()),
-        HttpStatus.NOT_FOUND);
+        new ErrorInfo(HttpStatus.NOT_FOUND.value(), req.getRequestURI()), HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(NoSuchElementException.class)
