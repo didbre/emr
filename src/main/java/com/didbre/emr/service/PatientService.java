@@ -79,6 +79,15 @@ public class PatientService {
    */
   public PatientVO createPatient(PatientVO patientVO) throws Exception {
 
+
+//    try
+//    {
+//      repository.findById(patientVO.getId());
+//    }
+//    catch (NoSuchElementException e)
+//    {
+//      throw new NoSuchElementException("Patient ID <"+patientVO.getId()+"> already exist");
+//    }
     PatientVO patientSaved = new PatientVO();
     Patient patient = new Patient();
     BeanUtils.copyProperties(patient, patientVO);
@@ -87,5 +96,32 @@ public class PatientService {
     BeanUtils.copyProperties(patientSaved, save);
 
     return patientSaved;
+  }
+
+  /**
+   * Update a patient
+   *
+   * @param patientVO
+   * @return
+   * @throws Exception
+   */
+  public PatientVO updatePatient(PatientVO patientVO) throws Exception {
+    try
+    {
+      repository.findById(patientVO.getId());
+    }
+    catch (NoSuchElementException e)
+    {
+      throw new NoSuchElementException("No patient with patient ID <"+patientVO.getId()+">");
+    }
+
+    PatientVO patientUpdated = new PatientVO();
+    Patient patient = new Patient();
+    BeanUtils.copyProperties(patient, patientVO);
+
+    Patient update = repository.save(patient);
+    BeanUtils.copyProperties(patientUpdated, update);
+
+    return patientUpdated;
   }
 }

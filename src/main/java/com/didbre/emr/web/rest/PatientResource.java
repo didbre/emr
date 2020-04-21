@@ -53,4 +53,10 @@ public class PatientResource {
 
     return patientService.createPatient(patientVO);
   }
+
+  @PatchMapping("patient_update")
+  public PatientVO updatePatient(@RequestBody PatientVO patientVO) throws Exception{
+
+    return patientService.updatePatient(patientVO);
+  }
 }
