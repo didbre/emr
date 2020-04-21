@@ -1,0 +1,18 @@
+{
+    "addressLine1": "215 prince albert",
+    "addressLine2": "test2",
+    "addressLine3": "test3",
+    "appOrLocal": "test4",
+    "birthDate": "2017-03-14",
+    "city": "test666",
+    "country": "test7",
+    "email": "test8@bla.com",
+    "firstName": "didier",
+    "hin": "test10",
+    "lastName": "test11",
+    "middleName": "test12",
+    "phoneExtension": "test13",
+    "phoneNumber": "test14",
+    "province": "test15",
+    "zipCode": "test16"
+  }
