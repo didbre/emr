@@ -1,0 +1,8 @@
+# curl localhost:8080/api/patient -H "Content-type:application/json" -X POST -d @data.json
+POST localhost:8080/api/patient/patient
+Content-Type: application/json
+
+< data.json
+
+###
+

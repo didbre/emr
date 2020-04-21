@@ -22,6 +22,13 @@ public class PatientResource {
     this.patientService = patientService;
   }
 
+  /**
+   * Get patient by id
+   *
+   * @param patientId
+   * @return PatientVO Virtual Object of Patient
+   * @throws Exception
+   */
   @GetMapping(value = "/{patientId}")
   public PatientVO findPatientById(@PathVariable(value = "patientId") Long patientId)
       throws Exception {
@@ -29,9 +36,21 @@ public class PatientResource {
     return patientService.findPatientById(patientId);
   }
 
+  /**
+   * Get all patients
+   *
+   * @return List of Virtual Object
+   * @throws Exception
+   */
   @GetMapping(value = "/all")
   public List<PatientVO> findAllPatients() throws Exception {
 
     return patientService.findAllPatients();
+  }
+
+  @PostMapping("patient")
+  public PatientVO createPatient(@RequestBody PatientVO patientVO) throws Exception {
+
+    return patientService.createPatient(patientVO);
   }
 }

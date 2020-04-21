@@ -1,5 +1,6 @@
 package com.didbre.emr.service.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.Date;
@@ -7,7 +8,9 @@ import java.util.Date;
 /** Patient Virtual Object */
 @Data
 public class PatientVO {
+//  @JsonIgnore
   private Long id;
+
   private String firstName;
   private String middleName;
   private String lastName;

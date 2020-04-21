@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -71,16 +70,22 @@ public class PatientService {
     }
   }
 
-  public Patient save(Patient patient) throws Exception {
+  /**
+   * Create a new patient
+   *
+   * @param patientVO
+   * @return
+   * @throws Exception
+   */
+  public PatientVO createPatient(PatientVO patientVO) throws Exception {
 
-    log.info("save the patient");
-    log.info(patient.toString());
-    Patient patient1 = null;
-    try {
-      patient1 = repository.save(patient);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return patient1;
+    PatientVO patientSaved = new PatientVO();
+    Patient patient = new Patient();
+    BeanUtils.copyProperties(patient, patientVO);
+
+    Patient save = repository.save(patient);
+    BeanUtils.copyProperties(patientSaved, save);
+
+    return patientSaved;
   }
 }

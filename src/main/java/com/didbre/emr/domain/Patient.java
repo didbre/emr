@@ -90,7 +90,7 @@ public class Patient {
 
   @Email
   @Size(min = 5, max = 254)
-  @Column(name = "email", length = 254, unique = true)
+  @Column(name = "email", length = 254)
   private String email;
 
   //    Health Insurance Number
