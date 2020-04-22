@@ -30,8 +30,28 @@ public class PatientValidator
         }
     }
 
+    /**
+     * Validate Patient before update
+     * @param patientVO
+     * @throws Exception
+     */
     protected void validateUpdate(PatientVO patientVO) throws Exception
     {
+//        check if patient exist
+        if (patientVO.getId() == null)
+        {
+//            patient id cannot be null
+//            todo change exception
+            throw new Exception("Cannot update a patient without id");
+        }
+        try
+        {
+            patientRepository.findById(patientVO.getId());
+        }
+        catch (Exception e)
+        {
+//            patient is not in the database
 
+        }
     }
 }
