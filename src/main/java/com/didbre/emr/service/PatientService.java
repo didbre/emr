@@ -2,6 +2,7 @@ package com.didbre.emr.service;
 
 import com.didbre.emr.domain.Patient;
 import com.didbre.emr.repository.PatientRepository;
+import com.didbre.emr.service.validator.PatientValidator;
 import com.didbre.emr.service.vo.PatientVO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
@@ -20,8 +21,11 @@ public class PatientService {
 
   private final PatientRepository repository;
 
-  public PatientService(PatientRepository patientRepository) {
+  private final PatientValidator validator;
+
+  public PatientService(PatientRepository patientRepository, PatientValidator validator) {
     this.repository = patientRepository;
+    this.validator = validator;
   }
 
   /**
@@ -106,22 +110,7 @@ public class PatientService {
    * @throws Exception
    */
   public PatientVO updatePatient(PatientVO patientVO) throws Exception {
-    try
-    {
-      repository.findById(patientVO.getId());
-    }
-    catch (NoSuchElementException e)
-    {
-      throw new NoSuchElementException("No patient with patient ID <"+patientVO.getId()+">");
-    }
-
-    PatientVO patientUpdated = new PatientVO();
-    Patient patient = new Patient();
-    BeanUtils.copyProperties(patient, patientVO);
-
-    Patient update = repository.save(patient);
-    BeanUtils.copyProperties(patientUpdated, update);
-
-    return patientUpdated;
+    PatientValidator validator = new PatientValidator(this.repository);
+    return validator.validateUpdate(patientVO);
   }
 }

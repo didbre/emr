@@ -4,10 +4,14 @@ import com.didbre.emr.domain.Patient;
 import com.didbre.emr.repository.PatientRepository;
 import com.didbre.emr.service.vo.PatientVO;
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 /** Validation for Patient before interacting with the database */
+@Service
+@Transactional
 public class PatientValidator {
   private final PatientRepository patientRepository;
 
@@ -34,19 +38,23 @@ public class PatientValidator {
    * @param patientVO
    * @throws Exception
    */
-  protected PatientVO validateUpdate(PatientVO patientVO) throws Exception {
+  public final  PatientVO validateUpdate(PatientVO patientVO) throws Exception {
     //        check if patient exist
     if (patientVO.getId() == null) {
       //            patient id cannot be null
       //            todo change exception
-      throw new Exception("Cannot update a patient without id");
+      throw new NoSuchElementException("Cannot update a patient without id");
     }
     try {
       patientRepository.findById(patientVO.getId());
-    } catch (Exception e) {
+    } catch (NoSuchElementException noSuchElementException) {
       //            patient is not in the database
       throw new NoSuchElementException(
           "Patient with ID <" + patientVO.getId() + "> is not existing");
+    }
+    catch (Exception e)
+    {
+        throw e;
     }
 
     Patient patient = new Patient();
