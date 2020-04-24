@@ -2,7 +2,9 @@ package com.didbre.emr.web.rest;
 
 import com.didbre.emr.service.PatientService;
 import com.didbre.emr.service.vo.PatientVO;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,8 +57,14 @@ public class PatientResource {
   }
 
   @PatchMapping("patient_update")
-  public PatientVO updatePatient(@RequestBody PatientVO patientVO) throws Exception{
+  public PatientVO updatePatient(@RequestBody PatientVO patientVO) throws Exception {
 
     return patientService.updatePatient(patientVO);
+  }
+
+  @DeleteMapping(value = "/{patientId}")
+  public void deletePatient(@PathVariable(value = "patientId") Long patientId) throws Exception {
+
+    patientService.deletePatient(patientId);
   }
 }

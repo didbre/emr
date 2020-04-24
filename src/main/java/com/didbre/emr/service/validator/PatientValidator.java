@@ -25,7 +25,7 @@ public class PatientValidator {
    * @param patientVO
    * @throws Exception
    */
-  protected void validateSave(PatientVO patientVO) throws Exception {
+  public void validateSave(PatientVO patientVO) throws Exception {
     //        check if the id is null
     if (patientVO.getId() != null) {
       //            throw error. Save patient cannot have id. Generate id done at db level
@@ -64,7 +64,5 @@ public class PatientValidator {
     BeanUtils.copyProperties(patientVO1, save);
 
     return patientVO1;
-
-
   }
 }

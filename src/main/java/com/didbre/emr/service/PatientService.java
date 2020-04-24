@@ -4,10 +4,13 @@ import com.didbre.emr.domain.Patient;
 import com.didbre.emr.repository.PatientRepository;
 import com.didbre.emr.service.validator.PatientValidator;
 import com.didbre.emr.service.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -16,8 +19,8 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
+@Slf4j
 public class PatientService {
-  Logger log = LoggerFactory.getLogger(PatientService.class);
 
   private final PatientRepository repository;
 
@@ -25,7 +28,7 @@ public class PatientService {
 
   public PatientService(PatientRepository patientRepository, PatientValidator validator) {
     this.repository = patientRepository;
-    this.validator = validator;
+    this.validator = new PatientValidator(this.repository);
   }
 
   /**
@@ -33,18 +36,20 @@ public class PatientService {
    *
    * @param patientId
    * @return
-   * @throws NoSuchElementException
+   * @throws Exception
    */
   public PatientVO findPatientById(Long patientId) throws Exception {
 
-    try {
-      PatientVO patientVO = new PatientVO();
-      BeanUtils.copyProperties(patientVO, repository.findById(patientId).get());
-      return patientVO;
-
-    } catch (NoSuchElementException e) {
-      throw new NoSuchElementException("No patient found with id <" + patientId + ">");
-    }
+    Patient patient =
+        repository
+            .findById(patientId)
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        String.format("No result for patient ID < %s >", patientId)));
+    PatientVO patientVO = new PatientVO();
+    BeanUtils.copyProperties(patientVO, patient);
+    return patientVO;
   }
 
   /**
@@ -54,24 +59,23 @@ public class PatientService {
    * @throws NoSuchElementException
    */
   public List<PatientVO> findAllPatients() throws Exception {
-    try {
-      List<Patient> patients = new ArrayList<>();
-      List<PatientVO> patientsVO = new ArrayList<>();
 
-      repository.findAll().forEach(e -> patients.add(e));
+    List<Patient> patients = new ArrayList<>();
+    repository.findAll().forEach(e -> patients.add(e));
 
-      for (int i = 0; i < patients.size(); i++) {
-        PatientVO patientVO = new PatientVO();
-        BeanUtils.copyProperties(patientVO, patients.get(i));
-        patientsVO.add(patientVO);
-      }
-
-      return patientsVO;
-
-    } catch (NoSuchElementException e) {
-      //    todo change the message of a exception without creating new one
-      throw new NoSuchElementException("No patient found");
+    if (patients.isEmpty()) {
+      throw new NoSuchElementException("No patient at all");
     }
+
+    List<PatientVO> patientsVO = new ArrayList<>();
+
+    for (Patient e : patients) {
+      PatientVO patientVO = new PatientVO();
+      BeanUtils.copyProperties(patientVO, e);
+      patientsVO.add(patientVO);
+    }
+
+    return patientsVO;
   }
 
   /**
@@ -83,15 +87,6 @@ public class PatientService {
    */
   public PatientVO createPatient(PatientVO patientVO) throws Exception {
 
-
-//    try
-//    {
-//      repository.findById(patientVO.getId());
-//    }
-//    catch (NoSuchElementException e)
-//    {
-//      throw new NoSuchElementException("Patient ID <"+patientVO.getId()+"> already exist");
-//    }
     PatientVO patientSaved = new PatientVO();
     Patient patient = new Patient();
     BeanUtils.copyProperties(patient, patientVO);
@@ -110,7 +105,26 @@ public class PatientService {
    * @throws Exception
    */
   public PatientVO updatePatient(PatientVO patientVO) throws Exception {
-    PatientValidator validator = new PatientValidator(this.repository);
     return validator.validateUpdate(patientVO);
+  }
+
+  /**
+   * Delete a patient
+   *
+   * @param patientId
+   * @throws Exception
+   */
+  public void deletePatient(Long patientId) throws Exception
+  {
+    log.info("About to delete patient with patientID <{}>", patientId);
+    try
+    {
+      repository.deleteById(patientId);
+    }
+    catch (EmptyResultDataAccessException e)
+    {
+      throw new EmptyResultDataAccessException(
+          String.format("Cannot delete. No result for patient ID < %s >", patientId), 1);
+    }
   }
 }

@@ -1,0 +1,5 @@
+curl localhost:8080/api/patient/90a -H "Content-type:application/json" -X DELETE
+curl localhost:8080/api/patient/patient_update -H "Content-type:application/json" -X PATCH -d @data.json
+curl localhost:8080/api/patient/patient -H "Content-type:application/json" -X POST -d @data.json
+
+http -j localhost:8080/api/patient/all

@@ -1,5 +1,6 @@
 package com.didbre.emr.web.rest.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -37,6 +38,27 @@ public class ExceptionControllerAdvice {
         HttpStatus.NOT_FOUND);
   }
 
+  @ExceptionHandler(NumberFormatException.class)
+  @ResponseBody
+  public ResponseEntity<ErrorInfo> NumberFormatException(
+      HttpServletRequest req, Exception ex) {
+//    todo not working
+    return new ResponseEntity<>(
+        new ErrorInfo(HttpStatus.NOT_ACCEPTABLE.value(), "Only number is accepted", req.getRequestURI()),
+        HttpStatus.NOT_ACCEPTABLE);
+  }
+
+  @ExceptionHandler(EmptyResultDataAccessException.class)
+  @ResponseBody
+  public ResponseEntity<ErrorInfo> handleEmptyResultDataAccessException(HttpServletRequest req, Exception ex) {
+    return new ResponseEntity<>(
+        new ErrorInfo(
+            HttpStatus.NOT_ACCEPTABLE.value(),
+            checkMessage(ex.getMessage()),
+            req.getRequestURI()),
+        HttpStatus.NOT_ACCEPTABLE);
+  }
+
   @ExceptionHandler(Exception.class)
   @ResponseBody
   public ResponseEntity<ErrorInfo> handleException(HttpServletRequest req, Exception ex) {
@@ -47,6 +69,8 @@ public class ExceptionControllerAdvice {
             req.getRequestURI()),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
+
+
 
   /**
    * If no message is part of the exception, send something meaningful
