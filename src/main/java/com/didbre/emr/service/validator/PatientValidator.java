@@ -38,7 +38,7 @@ public class PatientValidator {
    * @param patientVO
    * @throws Exception
    */
-  public final  PatientVO validateUpdate(PatientVO patientVO) throws Exception {
+  public final PatientVO validateUpdate(PatientVO patientVO) throws Exception {
     //        check if patient exist
     if (patientVO.getId() == null) {
       //            patient id cannot be null
@@ -50,11 +50,9 @@ public class PatientValidator {
     } catch (NoSuchElementException noSuchElementException) {
       //            patient is not in the database
       throw new NoSuchElementException(
-          "Patient with ID <" + patientVO.getId() + "> is not existing");
-    }
-    catch (Exception e)
-    {
-        throw e;
+          String.format("Patient with ID < %s > is not existing", patientVO.getId()));
+    } catch (Exception e) {
+      throw e;
     }
 
     Patient patient = new Patient();
