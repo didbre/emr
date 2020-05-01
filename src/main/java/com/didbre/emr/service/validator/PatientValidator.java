@@ -3,20 +3,37 @@ package com.didbre.emr.service.validator;
 import com.didbre.emr.domain.Patient;
 import com.didbre.emr.repository.PatientRepository;
 import com.didbre.emr.service.vo.PatientVO;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 
 /** Validation for Patient before interacting with the database */
 @Service
 @Transactional
+@Slf4j
 public class PatientValidator {
   private final PatientRepository patientRepository;
 
   public PatientValidator(PatientRepository patientRepository) {
     this.patientRepository = patientRepository;
+  }
+
+  /**
+   * Validate query request
+   *
+   * <p>1. Check if the search criteria is a number
+   *
+   * @param searchId
+   * @throws Exception
+   */
+  public void validateQuery(String searchId) throws NumberFormatException {
+    if (!NumberUtils.isCreatable(searchId)) {
+      throw new NumberFormatException(
+          "< " + searchId + " > is not a valid search criteria. Only number is accepted");
+    }
   }
 
   /**
@@ -26,10 +43,11 @@ public class PatientValidator {
    * @throws Exception
    */
   public void validateSave(PatientVO patientVO) throws Exception {
-    //        check if the id is null
+
     if (patientVO.getId() != null) {
-      //            throw error. Save patient cannot have id. Generate id done at db level
+      throw new Exception("Cannot create new patient with an ID ");
     }
+
   }
 
   /**
@@ -56,11 +74,14 @@ public class PatientValidator {
     }
 
     Patient patient = new Patient();
+    //    Copy info from the request to the pojo used for the database
     BeanUtils.copyProperties(patient, patientVO);
-    Patient save = patientRepository.save(patient);
-    PatientVO patientVO1 = new PatientVO();
-    BeanUtils.copyProperties(patientVO1, save);
+    //    Save the patient
+    Patient patientSaved = patientRepository.save(patient);
+    PatientVO patientVOReturn = new PatientVO();
+    //    Copy info from the pojo used for the database to the pojo used by the web tier
+    BeanUtils.copyProperties(patientVOReturn, patientSaved);
 
-    return patientVO1;
+    return patientVOReturn;
   }
 }

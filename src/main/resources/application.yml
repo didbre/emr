@@ -12,3 +12,6 @@ spring:
     driverClassName: org.postgresql.Driver
 #  liquibase:
 #    change-log: database
+
+#logging:
+#  level.root: debug

@@ -6,11 +6,9 @@ import com.didbre.emr.service.validator.PatientValidator;
 import com.didbre.emr.service.vo.PatientVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -38,11 +36,11 @@ public class PatientService {
    * @return
    * @throws Exception
    */
-  public PatientVO findPatientById(Long patientId) throws Exception {
+  public PatientVO findPatientById(String patientId) throws Exception {
 
     Patient patient =
         repository
-            .findById(patientId)
+            .findById(NumberUtils.createLong(patientId))
             .orElseThrow(
                 () ->
                     new NoSuchElementException(
@@ -87,6 +85,7 @@ public class PatientService {
    */
   public PatientVO createPatient(PatientVO patientVO) throws Exception {
 
+    validator.validateSave(patientVO);
     PatientVO patientSaved = new PatientVO();
     Patient patient = new Patient();
     BeanUtils.copyProperties(patient, patientVO);
