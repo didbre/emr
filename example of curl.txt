@@ -6,5 +6,6 @@ curl localhost:8080/api/patient/create -H "Content-type:application/json" -X POS
 http -j localhost:8080/api/patient/all
 http -j localhost:8080/api/patient/123
 
+# remove the id for post event
 http POST localhost:8080/api/patient/create @data.json
-http PUT
+http PUT localhost:8080/api/patient/create @data.json

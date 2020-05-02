@@ -77,6 +77,16 @@ public class PatientService {
   }
 
   /**
+   * Get the number of patient
+   * @return
+   * @throws Exception
+   */
+  public Long getNumberOfPatient() throws Exception
+  {
+    return repository.count();
+  }
+
+  /**
    * Create a new patient
    *
    * @param patientVO

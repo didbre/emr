@@ -55,6 +55,18 @@ public class PatientController {
   }
 
   /**
+   * Get the number of patient
+   *
+   * @return
+   * @throws Exception
+   */
+  @GetMapping(value = "all/number")
+  public Long getNumberOfPatient() throws Exception
+  {
+    return patientService.getNumberOfPatient();
+  }
+
+  /**
    * Create a patient
    *
    * @param patientVO
