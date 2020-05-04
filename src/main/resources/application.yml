@@ -10,8 +10,14 @@ spring:
     username: didbre
     password:
     driverClassName: org.postgresql.Driver
+
+  devtools:
+    restart:
+      pollInterval: 1000
 #  liquibase:
 #    change-log: database
+
+
 
 #logging:
 #  level.root: debug
